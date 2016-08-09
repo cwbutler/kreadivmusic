@@ -12,6 +12,9 @@ import { createMemoryHistory, match, RouterContext } from 'react-router';
 import { queryFirebaseServer } from '../../common/lib/redux-firebase/queryFirebase';
 import { routerMiddleware, syncHistoryWithStore } from 'react-router-redux';
 import { toJSON } from '../../common/transit';
+import theme from '../../common/theme';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
 
 const initialState = createInitialState();
 
@@ -31,11 +34,17 @@ const createRequestInitialState = req => {
   };
 };
 
-const renderApp = (store, renderProps) => {
+const renderApp = (store, renderProps, req) => {
+  const muiTheme = getMuiTheme(theme, {
+    userAgent: req.headers['user-agent']
+  });
+
   const appHtml = ReactDOMServer.renderToString(
-    <Provider store={store}>
-      <RouterContext {...renderProps} />
-    </Provider>
+    <MuiThemeProvider muiTheme={muiTheme}>
+      <Provider store={store}>
+        <RouterContext {...renderProps} />
+      </Provider>
+    </MuiThemeProvider>
   );
   return { appHtml, helmet: Helmet.rewind() };
 };
@@ -57,7 +66,7 @@ const renderPage = (store, renderProps, req) => {
     delete state.routing;
   }
   const { headers, hostname } = req;
-  const { appHtml, helmet } = renderApp(store, renderProps);
+  const { appHtml, helmet } = renderApp(store, renderProps, req);
   const {
     styles: { app: appCssFilename },
     javascript: { app: appJsFilename },
@@ -99,7 +108,7 @@ export default function render(req, res, next) {
     }
     try {
       if (!process.env.IS_SERVERLESS) {
-        await queryFirebaseServer(() => renderApp(store, renderProps));
+        await queryFirebaseServer(() => renderApp(store, renderProps, req));
       }
       const html = renderPage(store, renderProps, req);
       const status = renderProps.routes
