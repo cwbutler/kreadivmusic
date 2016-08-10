@@ -3,8 +3,15 @@ import linksMessages from '../../common/app/linksMessages';
 import { FormattedMessage } from 'react-intl';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
-import FaBars from 'react-icons/lib/fa/bars';
+import MdUser from 'react-icons/lib/md/account-circle';
 import IconButton from 'material-ui/IconButton';
+
+const style = {
+  width: '64px',
+  height: '64px'
+};
+const inactiveColor = '#777eff';
+
 
 class Header extends Component {
 
@@ -17,8 +24,8 @@ class Header extends Component {
 
     return (
       <header id="header">
-        <IconButton tooltip="Menu">
-          <FaBars size={24} color="black" style={{ cursor: 'pointer' }} />
+        <IconButton tooltip="User Account" style={style} >
+          <MdUser size={35} color="#f5f5f5" />
         </IconButton>
       </header>
     );

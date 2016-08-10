@@ -21,12 +21,6 @@ const Menu = () => (
         <MdHome size={iconSize} color={inactiveColor} />
       </IconButton>
     </div>
-
-    <div id="static-tools">
-      <IconButton style={style} tooltip="User Account">
-        <MdUser size={iconSize} color={inactiveColor} />
-      </IconButton>
-    </div>
   </div>
 );
 
